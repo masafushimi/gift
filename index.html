@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>画像ボタン（8グリッド）</title>
+<style>
+  :root { --radius: 16px; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; margin: 0; }
+  .panel {
+    max-width: 720px; margin: 24px auto; padding: 24px;
+    border: 2px solid #f0d96a; border-radius: 20px;
+    background: #fffdf7;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  /* 画像ボタン */
+  .imgbtn {
+    position: relative; border: none; padding: 0; cursor: pointer;
+    border-radius: var(--radius); overflow: hidden; display: block;
+    box-shadow: 0 6px 20px rgba(0,0,0,.12); background: #eee;
+    aspect-ratio: 16 / 10; /* 画像の形に合わせて調整可 */
+  }
+  .imgbtn:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
+  .imgbtn img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform .25s ease;
+  }
+  .imgbtn:hover img { transform: scale(1.04); }
+  .imgbtn .label {
+    position: absolute; inset: auto 12px 12px 12px;
+    padding: 8px 14px; border-radius: 999px;
+    background: rgba(0,0,0,.55); color: #fff; font-weight: 700;
+    letter-spacing: .05em; font-size: 18px; text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    display: inline-block; pointer-events: none; user-select: none;
+  }
+  /* 小さめ画面で1列 */
+  @media (max-width: 520px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="panel" aria-label="興味カテゴリー">
+    <div class="grid" id="categoryGrid">
+      <!-- お菓子 -->
+      <button class="imgbtn" type="button" data-category="お菓子" aria-label="お菓子">
+        <img src="https://placehold.co/800x500?text=%E3%81%8A%E8%8F%93%E5%AD%90" alt="お菓子の写真">
+        <span class="label">お菓子</span>
+      </button>
+      <!-- グルメ -->
+      <button class="imgbtn" type="button" data-category="グルメ" aria-label="グルメ">
+        <img src="https://placehold.co/800x500?text=%E3%82%B0%E3%83%AB%E3%83%A1" alt="グルメの写真">
+        <span class="label">グルメ</span>
+      </button>
+      <!-- スイーツ -->
+      <button class="imgbtn" type="button" data-category="スイーツ" aria-label="スイーツ">
+        <img src="https://placehold.co/800x500?text=%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84" alt="スイーツの写真">
+        <span class="label">スイーツ</span>
+      </button>
+      <!-- ビジネス -->
+      <button class="imgbtn" type="button" data-category="ビジネス" aria-label="ビジネス">
+        <img src="https://placehold.co/800x500?text=%E3%83%93%E3%82%B8%E3%83%8D%E3%82%B9" alt="ビジネスの街並みの写真">
+        <span class="label">ビジネス</span>
+      </button>
+      <!-- 料理 -->
+      <button class="imgbtn" type="button" data-category="料理" aria-label="料理">
+        <img src="https://placehold.co/800x500?text=%E6%96%99%E7%90%86" alt="料理の写真">
+        <span class="label">料理</span>
+      </button>
+      <!-- 芸術 -->
+      <button class="imgbtn" type="button" data-category="芸術" aria-label="芸術">
+        <img src="https://placehold.co/800x500?text=%E8%8A%B8%E8%A1%93" alt="芸術の写真">
+        <span class="label">芸術</span>
+      </button>
+      <!-- 旅行 -->
+      <button class="imgbtn" type="button" data-category="旅行" aria-label="旅行">
+        <img src="https://placehold.co/800x500?text=%E6%97%85%E8%A1%8C" alt="旅行の海の写真">
+        <span class="label">旅行</span>
+      </button>
+      <!-- スポーツ -->
+      <button class="imgbtn" type="button" data-category="スポーツ" aria-label="スポーツ">
+        <img src="https://placehold.co/800x500?text=%E3%82%B9%E3%83%9D%E3%83%BC%E3%83%84" alt="サッカーの写真">
+        <span class="label">スポーツ</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // クリック時の挙動：任意で書き換えてください（例：ページ遷移・RAGにクエリ送信など）
+    document.getElementById("categoryGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest(".imgbtn");
+      if (!btn) return;
+      const category = btn.dataset.category;
+      // 例：遷移
+      // location.href = `/categories/${encodeURIComponent(category)}`;
+      // 例：イベント送信
+      console.log("clicked:", category);
+      alert(`「${category}」が選択されました`);
+    });
+  </script>
+</body>
+</html>
