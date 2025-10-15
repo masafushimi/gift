@@ -128,6 +128,9 @@
       thinkingBox.style.display = "flex";
       thinkingMsg.textContent = `「${category}」から連想しておすすめを組み立てています…`;
 
+      // 👇 ここを追加：AIおすすめエリアへ自動スクロール
+    recoArea.scrollIntoView({ behavior: "smooth", block: "start" });
+
       // 疑似AIレコメンド（★本番ではここをfetchに差し替え）
       // 例: const data = await realAiRecommend(category);
       const data = await fakeAiRecommend(category);
