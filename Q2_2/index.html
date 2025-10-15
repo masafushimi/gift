@@ -117,6 +117,12 @@
     const thinkingBox = document.getElementById("thinkingBox");
     const thinkingMsg = document.getElementById("thinkingMsg");
 
+      // ▼ 追加：オフセット付きスクロール関数（見出しの少し下まで表示）
+  function scrollToReco(offset = 100) {
+    const y = recoArea.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  }
+
     grid.addEventListener("click", async (e) => {
       const btn = e.target.closest(".imgbtn");
       if (!btn) return;
@@ -129,7 +135,7 @@
       thinkingMsg.textContent = `「${category}」から連想しておすすめを組み立てています…`;
 
       // 👇 ここを追加：AIおすすめエリアへ自動スクロール
-    recoArea.scrollIntoView({ behavior: "smooth", block: "start" });
+     scrollToReco(120); 
 
       // 疑似AIレコメンド（★本番ではここをfetchに差し替え）
       // 例: const data = await realAiRecommend(category);
