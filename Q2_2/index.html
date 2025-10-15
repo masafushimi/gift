@@ -6,7 +6,8 @@
 <title>画像ボタン（8グリッド）</title>
 <style>
   :root { --radius: 16px; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; margin: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; margin: 0; background:#fff; }
+  h1 { margin: 16px 0; }
   .panel {
     max-width: 720px; margin: 24px auto; padding: 24px;
     border: 2px solid #f0d96a; border-radius: 20px;
@@ -22,21 +23,47 @@
     position: relative; border: none; padding: 0; cursor: pointer;
     border-radius: var(--radius); overflow: hidden; display: block;
     box-shadow: 0 6px 20px rgba(0,0,0,.12); background: #eee;
-    aspect-ratio: 16 / 10; /* 画像の形に合わせて調整可 */
+    aspect-ratio: 16 / 10;
   }
   .imgbtn:focus-visible { outline: 3px solid #1a73e8; outline-offset: 2px; }
-  .imgbtn img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    transition: transform .25s ease;
-  }
+  .imgbtn img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .25s ease; }
   .imgbtn:hover img { transform: scale(1.04); }
   .imgbtn .label {
-    position: absolute; inset: auto 12px 12px 12px;
-    padding: 8px 14px; border-radius: 999px;
-    background: rgba(0,0,0,.55); color: #fff; font-weight: 700;
-    letter-spacing: .05em; font-size: 18px; text-shadow: 0 1px 2px rgba(0,0,0,.35);
-    display: inline-block; pointer-events: none; user-select: none;
+    position: absolute; inset: auto 12px 12px 12px; padding: 8px 14px; border-radius: 999px;
+    background: rgba(0,0,0,.55); color: #fff; font-weight: 700; letter-spacing: .05em; font-size: 18px; text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    pointer-events: none; user-select: none;
   }
+
+  /* === レコメンド結果UI === */
+  .reco {
+    max-width: 920px; margin: 12px auto 40px; padding: 16px 16px 4px;
+  }
+  .reco h2 { margin: 0 0 12px; font-size: 20px; }
+  .reco .thinking {
+    display:flex; align-items:center; gap:10px; padding:12px 14px; border:1px dashed #e3c94a; background:#fffaf0; border-radius:12px; margin-bottom:14px;
+  }
+  .dots { letter-spacing: 2px; }
+  @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+  .dots span { animation: blink 1.2s infinite; }
+  .dots span:nth-child(2){ animation-delay:.2s }
+  .dots span:nth-child(3){ animation-delay:.4s }
+
+  .cards {
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:16px;
+  }
+  .card {
+    border:1px solid #eee; border-radius:14px; overflow:hidden; background:#fff; box-shadow:0 4px 14px rgba(0,0,0,.08);
+  }
+  .card img { width:100%; height:150px; object-fit:cover; display:block; }
+  .card .body { padding:12px; }
+  .badge { display:inline-block; font-size:12px; background:#ffeab6; color:#7a5000; padding:4px 8px; border-radius:999px; margin-right:6px; }
+  .reason { color:#444; font-size:13px; line-height:1.5; margin-top:8px; }
+  .actions { margin-top:10px; display:flex; gap:8px; }
+  .btn {
+    border:1px solid #ddd; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer;
+  }
+  .btn:hover { background:#fafafa; }
+
   /* 小さめ画面で1列 */
   @media (max-width: 520px) {
     .grid { grid-template-columns: 1fr; }
@@ -45,6 +72,7 @@
 </head>
 <body>
   <h1 style="text-align:center">田中さんからギフト🎁が届いています</h1>
+
   <div class="panel" aria-label="興味カテゴリー">
     <h1 style="text-align:center">どんな食べ物が好きですか？？</h1>
     <div class="grid" id="categoryGrid">
@@ -71,18 +99,133 @@
     </div>
   </div>
 
+  <!-- レコメンド結果の描画領域 -->
+  <section class="reco" id="recoArea" hidden>
+    <h2>AIのおすすめ</h2>
+    <div class="thinking" id="thinkingBox">
+      <strong>考え中</strong>
+      <span class="dots"><span>●</span><span>●</span><span>●</span></span>
+      <small id="thinkingMsg">好みに合うギフト候補を推論しています…</small>
+    </div>
+    <div class="cards" id="recoCards"></div>
+  </section>
+
   <script>
-    // クリック時の挙動：任意で書き換えてください（例：ページ遷移・RAGにクエリ送信など）
-    document.getElementById("categoryGrid").addEventListener("click", (e) => {
+    const grid = document.getElementById("categoryGrid");
+    const recoArea = document.getElementById("recoArea");
+    const recoCards = document.getElementById("recoCards");
+    const thinkingBox = document.getElementById("thinkingBox");
+    const thinkingMsg = document.getElementById("thinkingMsg");
+
+    grid.addEventListener("click", async (e) => {
       const btn = e.target.closest(".imgbtn");
       if (!btn) return;
       const category = btn.dataset.category;
-      // 例：遷移
-      // location.href = `/categories/${encodeURIComponent(category)}`;
-      // 例：イベント送信
-      console.log("clicked:", category);
-      alert(`「${category}」が選択されました`);
+
+      // UI: レコメンドエリア表示 & ローディング
+      recoArea.hidden = false;
+      recoCards.innerHTML = "";
+      thinkingBox.style.display = "flex";
+      thinkingMsg.textContent = `「${category}」から連想しておすすめを組み立てています…`;
+
+      // 疑似AIレコメンド（★本番ではここをfetchに差し替え）
+      // 例: const data = await realAiRecommend(category);
+      const data = await fakeAiRecommend(category);
+
+      // 表示
+      thinkingBox.style.display = "none";
+      renderCards(data);
     });
+
+    // 疑似AI：カテゴリに応じて“それっぽい”候補＋理由を返す
+    async function fakeAiRecommend(category) {
+      await wait(900 + Math.random()*800); // ちょっと考える
+      const DB = {
+        "お肉": [
+          {
+            title: "黒毛和牛 すき焼き用 600g",
+            img: "https://images.unsplash.com/photo-1604908554019-9a1d9a9f3c0b?q=80&w=1200&auto=format&fit=crop",
+            tags: ["贅沢", "家族で"],
+            reason: "甘めの割下で楽しめる薄切り。脂のキレがよく、万人受けします。"
+          },
+          {
+            title: "米沢牛 サーロインステーキ 200g×2",
+            img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=1200&auto=format&fit=crop",
+            tags: ["ごちそう", "焼くだけ"],
+            reason: "厚切りで満足感。塩胡椒だけで旨みが立ちます。ギフト映え◎"
+          },
+          {
+            title: "熟成ローストビーフ 400g",
+            img: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop",
+            tags: ["切るだけ", "日持ち"],
+            reason: "解凍→カットでOK。ワインや和惣菜とも相性よし。"
+          }
+        ],
+        "和食": [
+          { title:"銀だら西京漬け 詰め合わせ", img:"https://images.unsplash.com/photo-1617191518405-413ac0b9f4cc?q=80&w=1200&auto=format&fit=crop", tags:["白米に合う"], reason:"レンチンでもふっくら。冷凍庫常備に喜ばれます。" },
+          { title:"出汁セット（鰹・昆布・椎茸）", img:"https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop", tags:["健康志向"], reason:"毎日の味噌汁や煮物がワンランクUP。" },
+        ],
+        "フルーツ系": [
+          { title:"季節のフルーツBOX", img:"https://images.unsplash.com/photo-1576402187878-974f70c890a5?q=80&w=1200&auto=format&fit=crop", tags:["旬", "カラフル"], reason:"甘味と香りのピークを産地直送。" }
+        ],
+        "魚介類": [
+          { title:"ずわい蟹むき身セット", img:"https://images.unsplash.com/photo-1604908812463-3a7d9c9f2f5a?q=80&w=1200&auto=format&fit=crop", tags:["鍋", "贅沢"], reason:"殻むき不要で食べやすい。年末年始に最適。" }
+        ]
+      };
+      // 未定義カテゴリでも何か返す
+      const items = DB[category] || [
+        { title:`${category}に合う定番ギフト`, img:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop", tags:["定番"], reason:"まずは間違いないベーシックから。" }
+      ];
+      // 簡単な“パーソナライズ風”シャッフル
+      return items.sort(() => Math.random() - .5).slice(0, Math.min(3, items.length));
+    }
+
+    function renderCards(list){
+      recoCards.innerHTML = list.map(item => cardHTML(item)).join("");
+      // クリック計測等
+      recoCards.querySelectorAll(".btn-select").forEach(btn=>{
+        btn.addEventListener("click", () => alert(`「${btn.dataset.title}」を候補に追加しました！`));
+      });
+      document.querySelectorAll(".btn-retry").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          thinkingBox.style.display="flex";
+          recoCards.innerHTML="";
+          const data = await fakeAiRecommend(btn.dataset.category);
+          thinkingBox.style.display="none";
+          renderCards(data);
+        });
+      });
+    }
+
+    const cardHTML = (item) => `
+      <article class="card">
+        <img src="${item.img}" alt="">
+        <div class="body">
+          <div>${(item.tags||[]).map(t=>`<span class="badge">#${t}</span>`).join("")}</div>
+          <h3 style="margin:8px 0 4px; font-size:16px;">${escapeHtml(item.title)}</h3>
+          <p class="reason">${escapeHtml(item.reason||"")}</p>
+          <div class="actions">
+            <button class="btn btn-select" data-title="${escapeAttr(item.title)}">これにする</button>
+            <button class="btn btn-retry" data-category="お肉">再提案</button>
+          </div>
+        </div>
+      </article>
+    `;
+
+    const wait = (ms)=> new Promise(r=>setTimeout(r, ms));
+    const escapeHtml = (s)=> String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    const escapeAttr = escapeHtml;
+
+    /* === 本番APIに差し替える場合の例 ===
+    async function realAiRecommend(category){
+      const res = await fetch('/api/recommend', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ category })
+      });
+      return await res.json(); // [{title, img, tags:[], reason}]
+    }
+    */
   </script>
 </body>
 </html>
