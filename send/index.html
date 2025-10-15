@@ -1,1 +1,286 @@
-a
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ギフト送付先フォーム</title>
+<style>
+  :root{
+    --accent:#29a86b; /* 緑ボタン */
+    --border:#e6e6e6;
+    --hint:#9aa0a6;
+    --label:#111;
+    --chip-req:#ffb300;
+    --chip-opt:#ffd87a;
+    --radius:12px;
+  }
+  body{margin:0;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;color:#222;background:#fff;}
+  .wrap{max-width:960px;margin:28px auto 64px;padding:0 20px;}
+  header{margin:8px 0 28px;}
+  .to-line{font-size:28px;font-weight:700;margin:0 0 20px;}
+  .lead{font-size:28px;line-height:1.5;text-align:center;margin:0 0 6px;}
+  .sub{font-size:20px;text-align:center;margin:0 24px 30px;}
+  .card{border:1px solid var(--border);border-radius:16px;padding:16px 18px;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.04);}
+
+  /* 選択アイテム表示 */
+  .item{display:flex;gap:14px;align-items:center;margin:0 auto 20px;max-width:760px;}
+  .thumb{width:90px;height:56px;border-radius:10px;background:#eee;object-fit:cover;flex:none}
+  .item h3{margin:0;font-size:18px}
+  .muted{color:#666;font-size:13px}
+
+  /* フォーム */
+  form{max-width:760px;margin:0 auto;}
+  .field{margin:14px 0;}
+  .row{display:flex;gap:14px}
+  .row>.field{flex:1}
+  label{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--label);margin-bottom:8px}
+  .chip{display:inline-block;font-size:12px;padding:3px 8px;border-radius:999px}
+  .req{background:var(--chip-req)}
+  .opt{background:var(--chip-opt)}
+  .ctrl{
+    position:relative;
+  }
+  input[type="text"],input[type="tel"],input[type="email"],input[type="datetime-local"],textarea{
+    width:100%;box-sizing:border-box;font-size:16px;padding:12px 14px 12px 44px;border:1px solid var(--border);
+    border-radius:12px;background:#fafafa;outline:none;transition:border .15s,box-shadow .15s;
+  }
+  textarea{min-height:120px;resize:vertical}
+  input:focus,textarea:focus{border-color:#cfcfcf;box-shadow:0 0 0 3px #f2f6ff}
+  .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9aa0a6;font-size:18px}
+  .hint{font-size:12px;color:var(--hint);margin-top:6px}
+  .error{color:#d93025;font-size:12px;margin-top:6px;display:none}
+  .is-error .error{display:block}
+  .is-error input,.is-error textarea{border-color:#ef9a9a;box-shadow:0 0 0 3px #fdeeee}
+
+  /* チェック系 */
+  .check{display:flex;align-items:center;gap:10px;margin:16px 0 6px}
+  .actions{display:flex;gap:10px;justify-content:flex-start;margin-top:18px}
+  .btn{
+    border:1px solid #cfd8dc;background:#fff;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer
+  }
+  .btn.primary{background:var(--accent);color:#fff;border-color:transparent}
+  .btn.primary:hover{filter:brightness(.98)}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+
+  /* 確認画面 */
+  .confirm{max-width:760px;margin:22px auto 0}
+  .kv{display:grid;grid-template-columns:140px 1fr;gap:6px 14px;font-size:15px}
+  .kv div{padding:8px 0;border-bottom:1px dashed #eee}
+  .kv .k{color:#666}
+
+  @media (max-width:560px){
+    .row{flex-direction:column}
+    .lead{font-size:22px}
+    .sub{font-size:16px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <p class="to-line" id="toLine">お客様へ</p>
+      <p class="lead" id="leadText"><span id="fromName">ご友人</span>様よりギフトが送られます。</p>
+      <p class="sub">ご送付先をご記入ください</p>
+    </header>
+
+    <!-- 選択アイテムの簡易表示 -->
+    <div class="card item" id="itemCard" aria-live="polite">
+      <img class="thumb" id="itemThumb" alt="">
+      <div>
+        <h3 id="itemTitle">選択されたギフト</h3>
+        <div class="muted" id="itemNote">内容をご確認のうえ、下記に送付先をご入力ください。</div>
+      </div>
+    </div>
+
+    <!-- 入力フォーム -->
+    <form id="giftForm" novalidate>
+      <div class="field">
+        <label for="zip">郵便番号 <span class="chip opt">任意</span></label>
+        <div class="ctrl">
+          <span class="icon">〒</span>
+          <input type="text" id="zip" name="zip" inputmode="numeric" pattern="\\d{3}-?\\d{4}" placeholder="例）100-0001">
+        </div>
+        <div class="hint">ハイフンあり・なし どちらでも可（自動変換しません）</div>
+      </div>
+
+      <div class="field is-required" id="f-address">
+        <label for="address">ご住所 <span class="chip req">必須</span></label>
+        <div class="ctrl">
+          <span class="icon">📮</span>
+          <input type="text" id="address" name="address" required placeholder="例）東京都中央区日本橋1-1-1 日本橋高島屋三井ビル 32F">
+        </div>
+        <div class="error">ご住所をご入力ください</div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="company">会社名 <span class="chip opt">任意</span></label>
+          <div class="ctrl">
+            <span class="icon">🏢</span>
+            <input type="text" id="company" name="company" placeholder="例）株式会社〇〇">
+          </div>
+        </div>
+        <div class="field">
+          <label for="dept">部署名 <span class="chip opt">任意</span></label>
+          <div class="ctrl">
+            <span class="icon">👥</span>
+            <input type="text" id="dept" name="dept" placeholder="例）営業部 第1グループ">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field is-required" id="f-name">
+          <label for="fullname">氏名 <span class="chip req">必須</span></label>
+          <div class="ctrl">
+            <span class="icon">👤</span>
+            <input type="text" id="fullname" name="fullname" required placeholder="例）山田 太郎">
+          </div>
+          <div class="error">お名前をご入力ください</div>
+        </div>
+        <div class="field">
+          <label for="kana">フリガナ <span class="chip opt">任意</span></label>
+          <div class="ctrl">
+            <span class="icon">ｱ</span>
+            <input type="text" id="kana" name="kana" placeholder="例）ヤマダ タロウ">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field is-required" id="f-tel">
+          <label for="tel">電話番号 <span class="chip req">必須</span></label>
+          <div class="ctrl">
+            <span class="icon">📞</span>
+            <input type="tel" id="tel" name="tel" required inputmode="tel" pattern="^[0-9+\\-\\s]{9,15}$" placeholder="例）080-1234-5678">
+          </div>
+          <div class="error">電話番号を正しく入力してください</div>
+        </div>
+        <div class="field">
+          <label for="email">メール <span class="chip opt">任意</span></label>
+          <div class="ctrl">
+            <span class="icon">✉️</span>
+            <input type="email" id="email" name="email" placeholder="例）taro@example.com">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="datetime">配達希望日時 <span class="chip opt">任意</span></label>
+          <div class="ctrl">
+            <span class="icon">🗓️</span>
+            <input type="datetime-local" id="datetime" name="datetime">
+          </div>
+          <div class="hint">一部エリア・商品ではご希望に沿えない場合があります</div>
+        </div>
+      </div>
+
+      <div class="check">
+        <input type="checkbox" id="thanks">
+        <label for="thanks" style="font-weight:600">お礼のメッセージを届ける</label>
+      </div>
+      <div class="field" id="thanksBox" style="display:none">
+        <div class="ctrl">
+          <span class="icon">📝</span>
+          <textarea id="thanksMsg" name="thanksMsg" placeholder="この度は、プレゼントをお贈りいただきまして、誠にありがとうございます。"></textarea>
+        </div>
+        <div class="hint">贈り主（送信者）にメッセージが届きます</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" id="btnBack" onclick="history.back()">戻る</button>
+        <button class="btn primary" type="submit" id="btnConfirm">確認する</button>
+      </div>
+    </form>
+
+    <!-- 確認画面 -->
+    <div class="card confirm" id="confirmView" hidden>
+      <h3 style="margin:4px 0 10px">入力内容の確認</h3>
+      <div class="kv" id="kv"></div>
+      <div class="actions">
+        <button class="btn" id="btnEdit">修正する</button>
+        <button class="btn primary" id="btnSend">送信する</button>
+      </div>
+      <p class="hint" style="margin-top:10px">※ 送信すると内容が確定します</p>
+    </div>
+  </div>
+
+<script>
+  // ===== ヘッダー文言をクエリから反映 =====
+  const q = new URLSearchParams(location.search);
+  const toName   = q.get("to")   || "お客様";
+  const fromName = q.get("from") || "ご友人";
+  const itemName = q.get("item") || "選択されたギフト";
+  const itemImg  = q.get("img")  || ""; // 画像URLがあれば渡す
+
+  document.getElementById("toLine").textContent = `${toName}様へ`;
+  document.getElementById("fromName").textContent = fromName;
+  document.getElementById("itemTitle").textContent = itemName;
+  const thumb = document.getElementById("itemThumb");
+  if(itemImg){ thumb.src = itemImg; thumb.alt = itemName; } else { thumb.style.background="#f0f0f0"; }
+
+  // ===== “お礼”チェックでテキストエリア表示 =====
+  const thanks = document.getElementById("thanks");
+  const thanksBox = document.getElementById("thanksBox");
+  thanks.addEventListener("change", ()=> thanksBox.style.display = thanks.checked ? "block" : "none");
+
+  // ===== 確認画面に切替 =====
+  const form = document.getElementById("giftForm");
+  const confirmView = document.getElementById("confirmView");
+  const kv = document.getElementById("kv");
+
+  form.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    // 簡易バリデーション
+    let ok = true;
+    ok &= toggleError("f-address", !form.address.value.trim());
+    ok &= toggleError("f-name",    !form.fullname.value.trim());
+    ok &= toggleError("f-tel",     !/^[0-9+\-\s]{9,15}$/.test(form.tel.value.trim()));
+    if(!ok) return;
+
+    // 表示用にまとめる
+    const data = {
+      "宛名": `${toName} 様`,
+      "贈り主": `${fromName} 様`,
+      "商品": itemName,
+      "郵便番号": form.zip.value,
+      "住所": form.address.value,
+      "会社名": form.company.value,
+      "部署": form.dept.value,
+      "氏名": form.fullname.value,
+      "フリガナ": form.kana.value,
+      "電話番号": form.tel.value,
+      "メール": form.email.value,
+      "配達希望日時": form.datetime.value,
+      "お礼メッセージ": thanks.checked ? form.thanksMsg.value : ""
+    };
+    kv.innerHTML = Object.entries(data).map(([k,v])=>`
+      <div class="k">${k}</div><div>${escapeHtml(v||"-")}</div>
+    `).join("");
+    form.hidden = true;
+    confirmView.hidden = false;
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  document.getElementById("btnEdit").addEventListener("click", ()=>{
+    confirmView.hidden = true;
+    form.hidden = false;
+  });
+
+  document.getElementById("btnSend").addEventListener("click", ()=>{
+    // 本番ではここで送信APIを叩く
+    // fetch('/api/gifts', { method:'POST', body: new FormData(form) })
+    alert("送信しました。ご入力ありがとうございました！");
+  });
+
+  function toggleError(id, isErr){
+    const el = document.getElementById(id);
+    el.classList.toggle("is-error", !!isErr);
+    return !isErr;
+  }
+  const escapeHtml = (s)=> String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+
+</script>
+</body>
+</html>
