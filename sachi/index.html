@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAGOMI - ネイルをしない人のためのネイルチップ</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .font-serif {
+            font-family: 'Noto Serif JP', serif;
+        }
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-[#FAF9F6] text-[#4A4A4A]">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-[#EAE7E1]">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="text-2xl font-serif tracking-widest font-bold text-[#8D7B68]">NAGOMI</div>
+            
+            <div class="hidden md:flex space-x-8 text-sm tracking-widest uppercase">
+                <a href="#concept" class="hover:text-[#8D7B68] transition-colors">Concept</a>
+                <a href="#products" class="hover:text-[#8D7B68] transition-colors">Designs</a>
+                <a href="#guide" class="hover:text-[#8D7B68] transition-colors">Guide</a>
+                <a href="#contact" class="hover:text-[#8D7B68] transition-colors">Contact</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <i data-lucide="shopping-bag" class="w-5 h-5 cursor-pointer"></i>
+                <button class="md:hidden" id="menu-toggle">
+                    <i data-lucide="menu" id="menu-icon-open"></i>
+                    <i data-lucide="x" id="menu-icon-close" class="hidden"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-white pt-20 flex flex-col items-center space-y-8 text-lg">
+        <a href="#concept" class="mobile-link">Concept</a>
+        <a href="#products" class="mobile-link">Designs</a>
+        <a href="#guide" class="mobile-link">Guide</a>
+        <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 md:pt-48 md:pb-32 px-4 overflow-hidden">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-center md:text-left z-10">
+                <span class="inline-block text-[#8D7B68] tracking-[0.2em] mb-4 text-sm font-medium">FOR YOUR SPECIAL ONE DAY</span>
+                <h1 class="text-4xl md:text-6xl font-serif leading-tight mb-6">
+                    一日だけの、<br />
+                    私へのご褒美ネイル。
+                </h1>
+                <p class="text-[#6B6B6B] mb-8 max-w-md mx-auto md:mx-0 leading-relaxed">
+                    仕事、家事、育児。普段は塗れないけれど、<br />
+                    週末や特別な時間だけ。自爪のように馴染む、<br />
+                    心地よいネイルチップを届けます。
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
+                    <button class="bg-[#8D7B68] text-white px-8 py-4 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
+                        デザインを見る <i data-lucide="chevron-right" class="ml-2 w-4 h-4"></i>
+                    </button>
+                    <button class="border border-[#8D7B68] text-[#8D7B68] px-8 py-4 rounded-full flex items-center justify-center hover:bg-[#8D7B68] hover:text-white transition-all">
+                        サイズ確認用チップを注文
+                    </button>
+                </div>
+            </div>
+            <div class="md:w-1/2 mt-12 md:mt-0 relative">
+                <div class="w-64 h-80 md:w-80 md:h-[450px] bg-[#EAE7E1] rounded-t-full mx-auto relative overflow-hidden shadow-xl">
+                    <img 
+                        src="https://images.unsplash.com/photo-1522337660859-02fbefca4702?q=80&w=400&h=600&auto=format&fit=crop" 
+                        alt="Hand with beautiful nails"
+                        class="w-full h-full object-cover"
+                    />
+                </div>
+                <!-- Abstract decorative circles -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#F3EEEA] rounded-full -z-10 blur-xl"></div>
+                <div class="absolute -bottom-10 -left-10 w-48 h-48 bg-[#D2E0FB]/30 rounded-full -z-10 blur-xl"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="bg-white py-20 px-4" id="concept">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-2xl md:text-3xl font-serif mb-4 italic">Why NAGOMI?</h2>
+                <div class="w-12 h-[1px] bg-[#8D7B68] mx-auto"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="text-center group">
+                    <div class="inline-block p-4 rounded-full bg-[#FAF9F6] mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="sparkles" class="w-8 h-8 text-[#8D7B68]"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-4">まるで自爪のよう</h3>
+                    <p class="text-[#6B6B6B] text-sm leading-relaxed">普段ネイルをしない方でも違和感のないよう、薄さと形、肌馴染みの良いカラーにこだわっています。</p>
+                </div>
+                <div class="text-center group">
+                    <div class="inline-block p-4 rounded-full bg-[#FAF9F6] mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="clock" class="w-8 h-8 text-[#8D7B68]"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-4">3分で完了、5秒でオフ</h3>
+                    <p class="text-[#6B6B6B] text-sm leading-relaxed">強力な粘着グミで、出かける直前に貼るだけ。外したい時はお湯でふやかすだけで簡単に取れます。</p>
+                </div>
+                <div class="text-center group">
+                    <div class="inline-block p-4 rounded-full bg-[#FAF9F6] mb-6 group-hover:scale-110 transition-transform">
+                        <i data-lucide="heart" class="w-8 h-8 text-[#8D7B68]"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-4">爪を削らない</h3>
+                    <p class="text-[#6B6B6B] text-sm leading-relaxed">ジェルネイルのように爪を削る必要はありません。自爪への負担を最小限に抑えます。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="py-20 px-4" id="products">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 space-y-6 md:space-y-0">
+                <div>
+                    <h2 class="text-3xl font-serif mb-2">Designs</h2>
+                    <p class="text-sm text-[#8D7B68]">心ときめく、毎日のためのデザイン</p>
+                </div>
+                <div class="flex space-x-4 text-xs tracking-widest overflow-x-auto pb-2" id="filter-buttons">
+                    <button data-category="all" class="filter-btn uppercase whitespace-nowrap pb-1 border-b-2 transition-all border-[#8D7B68] text-[#8D7B68]">all</button>
+                    <button data-category="natural" class="filter-btn uppercase whitespace-nowrap pb-1 border-b-2 transition-all border-transparent text-gray-400 hover:text-[#8D7B68]">natural</button>
+                    <button data-category="office" class="filter-btn uppercase whitespace-nowrap pb-1 border-b-2 transition-all border-transparent text-gray-400 hover:text-[#8D7B68]">office</button>
+                    <button data-category="special" class="filter-btn uppercase whitespace-nowrap pb-1 border-b-2 transition-all border-transparent text-gray-400 hover:text-[#8D7B68]">special</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="product-grid">
+                <!-- Products will be rendered here by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Size Guide Section -->
+    <section class="bg-[#8D7B68] text-white py-20 px-4" id="guide">
+        <div class="max-w-4xl mx-auto text-center">
+            <i data-lucide="ruler" class="w-12 h-12 mx-auto mb-6 opacity-80"></i>
+            <h2 class="text-3xl font-serif mb-6">初めての方へ</h2>
+            <p class="mb-10 text-white/80 leading-relaxed">
+                「チップが大きすぎたらどうしよう…」という不安を解消するために、<br />
+                10サイズのクリアチップが入った「サイズ確認用セット（送料無料/¥300）」をご用意しています。<br />
+                まずは自分の爪にぴったりの番号を見つけることから始めましょう。
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                    <div class="text-3xl font-serif mb-2 opacity-50">01</div>
+                    <h3 class="font-bold mb-2">計測キットを注文</h3>
+                    <p class="text-sm text-white/70 leading-relaxed">まずは全サイズが入った確認用チップで実際にフィッティング。</p>
+                </div>
+                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                    <div class="text-3xl font-serif mb-2 opacity-50">02</div>
+                    <h3 class="font-bold mb-2">自分サイズをメモ</h3>
+                    <p class="text-sm text-white/70 leading-relaxed">左右10本の爪に合うサイズ番号を控えます。</p>
+                </div>
+                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-sm">
+                    <div class="text-3xl font-serif mb-2 opacity-50">03</div>
+                    <h3 class="font-bold mb-2">好きなデザインを選ぶ</h3>
+                    <p class="text-sm text-white/70 leading-relaxed">控えの番号を入力して、お好みのデザインを購入するだけ。</p>
+                </div>
+            </div>
+            <button class="bg-white text-[#8D7B68] px-10 py-4 rounded-full font-bold hover:scale-105 transition-transform">
+                サイズ計測キットを見る
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-[#EAE7E1] py-16 px-4" id="contact">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div class="md:col-span-2">
+                <h2 class="text-2xl font-serif font-bold text-[#8D7B68] mb-6">NAGOMI</h2>
+                <p class="text-sm text-[#6B6B6B] mb-6 leading-relaxed">
+                    「和む（なごむ）」ような心地よさを、あなたの指先に。<br />
+                    特別な一日も、何気ない日常も、少しだけ自信を持てるように。
+                </p>
+                <div class="flex space-x-4">
+                    <i data-lucide="instagram" class="w-6 h-6 text-[#8D7B68] cursor-pointer"></i>
+                    <div class="text-xs uppercase tracking-widest py-1 px-3 border border-[#EAE7E1] rounded-full text-[#8D7B68]">Follow us</div>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-sm uppercase tracking-widest">Shop</h4>
+                <ul class="text-sm space-y-4 text-[#6B6B6B]">
+                    <li><a href="#" class="hover:text-[#8D7B68]">All Designs</a></li>
+                    <li><a href="#" class="hover:text-[#8D7B68]">Natural Series</a></li>
+                    <li><a href="#" class="hover:text-[#8D7B68]">Gift Selection</a></li>
+                    <li><a href="#" class="hover:text-[#8D7B68]">Subscription</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-sm uppercase tracking-widest">Support</h4>
+                <ul class="text-sm space-y-4 text-[#6B6B6B]">
+                    <li><a href="#" class="hover:text-[#8D7B68]">How to Use</a></li>
+                    <li><a href="#" class="hover:text-[#8D7B68]">FAQ</a></li>
+                    <li><a href="#" class="hover:text-[#8D7B68]">Shipping & Return</a></li>
+                    <li><a href="#" class="hover:text-[#8D7B68]">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-[#FAF9F6] text-center text-[10px] text-gray-400 tracking-widest uppercase">
+            &copy; 2024 NAGOMI One-Day Nail Atelier. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Product Data
+        const products = [
+            {
+                id: 1,
+                name: "Sakura Sheer Gradient",
+                tag: "人気No.1",
+                category: "natural",
+                description: "自爪を美しく見せる、透明感のあるピンクグラデーション。",
+                price: "3,200",
+                image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=400&h=500&auto=format&fit=crop"
+            },
+            {
+                id: 2,
+                name: "Greige Skin French",
+                tag: "お仕事にも",
+                category: "office",
+                description: "極細のゴールドラインが輝く、大人なグレージュ。",
+                price: "3,500",
+                image: "https://images.unsplash.com/photo-1634712282287-14ed57b9cc89?q=80&w=400&h=500&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Champagne Pearl",
+                tag: "結婚式・お呼ばれ",
+                category: "special",
+                description: "パールの輝きが上品な、ハレの日のためのデザイン。",
+                price: "3,800",
+                image: "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?q=80&w=400&h=500&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Nuance Sage",
+                tag: "週末限定",
+                category: "natural",
+                description: "心が落ち着くセージグリーンのニュアンスアート。",
+                price: "3,500",
+                image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=400&h=500&auto=format&fit=crop"
+            }
+        ];
+
+        // UI State
+        let activeCategory = 'all';
+
+        // DOM Elements
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+        const productGrid = document.getElementById('product-grid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        // Mobile Menu Logic
+        menuToggle.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('hidden');
+            if (isOpen) {
+                menuIconOpen.classList.remove('hidden');
+                menuIconClose.classList.add('hidden');
+            } else {
+                menuIconOpen.classList.add('hidden');
+                menuIconClose.classList.remove('hidden');
+            }
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIconOpen.classList.remove('hidden');
+                menuIconClose.classList.add('hidden');
+            });
+        });
+
+        // Function to render products
+        function renderProducts(category) {
+            const filtered = category === 'all' 
+                ? products 
+                : products.filter(p => p.category === category);
+
+            productGrid.innerHTML = filtered.map(p => `
+                <div class="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+                    <div class="aspect-[4/5] overflow-hidden relative">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <span class="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[10px] rounded-full uppercase tracking-widest font-bold">${p.tag}</span>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-serif text-lg mb-1">${p.name}</h3>
+                        <p class="text-[#8D7B68] text-sm mb-3 font-medium">¥${p.price}</p>
+                        <p class="text-xs text-[#6B6B6B] leading-relaxed mb-4">${p.description}</p>
+                        <button class="w-full py-2 text-xs border border-[#8D7B68] text-[#8D7B68] rounded-full hover:bg-[#8D7B68] hover:text-white transition-all">
+                            詳細を見る
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Logic
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const category = btn.getAttribute('data-category');
+                
+                // Update buttons UI
+                filterButtons.forEach(b => {
+                    b.classList.remove('border-[#8D7B68]', 'text-[#8D7B68]');
+                    b.classList.add('border-transparent', 'text-gray-400');
+                });
+                btn.classList.add('border-[#8D7B68]', 'text-[#8D7B68]');
+                btn.classList.remove('border-transparent', 'text-gray-400');
+
+                renderProducts(category);
+            });
+        });
+
+        // Initial Render
+        renderProducts('all');
+
+    </script>
+</body>
+</html>
